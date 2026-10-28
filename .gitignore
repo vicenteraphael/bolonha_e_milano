@@ -1,0 +1,14 @@
+# Arquivos gerados pela compilação
+build/
+bin/
+*.o
+*.obj
+*.exe
+bolonhaemilano
+
+# Editores e sistema
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
