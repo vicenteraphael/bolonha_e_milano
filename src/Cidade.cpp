@@ -1,11 +1,55 @@
-#include <Cidade.h>
+#include "Cidade.h"
 #include <iostream>
 
-Cidade::Cidade(const std::string& nome, const Jogador* dono)
-    : nome(nome), anoAtual(1400), dono(dono) {}
+Cidade::Cidade(const std::string& nome, Jogador* dono)
+    : nome(nome),
+      anoAtual(ANO_INICIAL),
+      dono(dono),
+      florins(FLORINS_INICIAIS),
+      terras(TERRAS_INICIAIS),
+      graos(GRAOS_INICIAIS) {}
+
+std::string Cidade::getNome() const { return nome; }
+int Cidade::getAnoAtual() const { return anoAtual; }
+Jogador* Cidade::getDono() const { return dono; }
+int Cidade::getFlorins() const { return florins; }
+int Cidade::getTerras() const { return terras; }
+int Cidade::getGraos() const { return graos; }
 
 void Cidade::avancarAno() {
     anoAtual++;
+}
+
+// Adicionar so aceita quantidades positivas, para nunca reduzir um recurso por
+// engano (quantidade negativa) nem deixa-lo negativo.
+void Cidade::adicionarFlorins(int quantidade) {
+    if (quantidade > 0) florins += quantidade;
+}
+
+bool Cidade::removerFlorins(int quantidade) {
+    if (quantidade <= 0 || quantidade > florins) return false;
+    florins -= quantidade;
+    return true;
+}
+
+void Cidade::adicionarTerras(int quantidade) {
+    if (quantidade > 0) terras += quantidade;
+}
+
+bool Cidade::removerTerras(int quantidade) {
+    if (quantidade <= 0 || quantidade > terras) return false;
+    terras -= quantidade;
+    return true;
+}
+
+void Cidade::adicionarGraos(int quantidade) {
+    if (quantidade > 0) graos += quantidade;
+}
+
+bool Cidade::removerGraos(int quantidade) {
+    if (quantidade <= 0 || quantidade > graos) return false;
+    graos -= quantidade;
+    return true;
 }
 
 void Cidade::exibirStatus() const {
@@ -13,5 +57,8 @@ void Cidade::exibirStatus() const {
               << "Cidade:     " << nome << "\n"
               << "Governante: " << dono->getTitulo() << " " << dono->getNome() << "\n"
               << "Ano atual:  " << anoAtual << "\n"
+              << "Florins:    " << florins << "\n"
+              << "Terras:     " << terras << " hectares\n"
+              << "Graos:      " << graos << " unidades\n"
               << "------------------------\n";
 }

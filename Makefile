@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -I src -I include
+CXXFLAGS = -std=c++17 -Wall -Wextra -I include
 SRC      = $(wildcard src/*.cpp)
 TARGET   = build/bolonhaemilano
 
@@ -7,7 +7,7 @@ TARGET   = build/bolonhaemilano
 
 all: $(TARGET)
 
-$(TARGET): $(wildcard src/*.cpp) $(wildcard src/*.h) $(wildcard include/*.h)
+$(TARGET): $(SRC) $(wildcard include/*.h)
 	mkdir -p build
 	$(CXX) $(CXXFLAGS) -o $@ $(SRC)
 

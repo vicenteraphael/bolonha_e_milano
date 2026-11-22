@@ -10,3 +10,7 @@ std::string Jogador::getNome() const {
 std::string Jogador::getTitulo() const {
     return titulo;
 }
+
+void Jogador::setTitulo(const std::string& novoTitulo) {
+    titulo = novoTitulo;
+}
