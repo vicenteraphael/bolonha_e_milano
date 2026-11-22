@@ -5,6 +5,7 @@
 #include "Jogador.h"
 #include "Cidade.h"
 #include "Mercado.h"
+#include "Agricultura.h"
 
 // Orquestra o jogo: mostra opcoes, le e valida a entrada e delega para a classe
 // certa. Guarda a partida atual (jogador + cidade) e uma instancia de cada servico.
@@ -15,6 +16,7 @@ private:
     std::unique_ptr<Jogador> jogador;   // nenhum ate "Novo jogo"
     std::unique_ptr<Cidade> cidade;     // nenhuma ate "Novo jogo"
     const Mercado mercado;              // servico de compra e venda (final)
+    const Agricultura agricultura;      // servico de colheita e alimentos (final)
 
     void exibirOpcoes() const;
     int lerOpcao();
@@ -34,6 +36,13 @@ private:
     void comprarTerras();
     void venderTerras();
     void informarResultado(bool sucesso, const char* sucessoMsg) const;
+
+    // Etapa 4: submenu da Agricultura (o Menu so delega e imprime; a regra mora na classe)
+    void abrirAgricultura();
+    void exibirOpcoesAgricultura() const;
+    int lerInteiro(const char* prompt);
+    void colher();
+    void distribuirAlimentos();
 
 public:
     Menu();

@@ -32,7 +32,7 @@ const char* const NOME_PADRAO_JOGADOR = "Jogador 1";
 const char* const NOME_PADRAO_CIDADE  = "Bolonha";
 }  // namespace
 
-Menu::Menu() : emExecucao(true), mercado() {}
+Menu::Menu() : emExecucao(true), mercado(), agricultura() {}
 
 void Menu::executar() {
     while (emExecucao) {
@@ -83,7 +83,7 @@ void Menu::processarOpcao(int opcao) {
             if (exigirPartida()) abrirMercado();
             break;
         case 4:
-            if (exigirPartida()) exibirNaoImplementado("Agricultura", 4);
+            if (exigirPartida()) abrirAgricultura();
             break;
         case 5:
             if (exigirPartida()) exibirNaoImplementado("Governo", 5);
@@ -187,7 +187,12 @@ void Menu::abrirMercado() {
 // Le e valida a quantidade. Devolve -1 se nao for um numero inteiro valido
 // (o Mercado tambem recusa quantidades <= 0).
 int Menu::lerQuantidade() {
-    std::cout << "Quantidade: ";
+    return lerInteiro("Quantidade: ");
+}
+
+// Mostra o prompt e le um inteiro (-1 se invalido). Fim da entrada encerra o jogo.
+int Menu::lerInteiro(const char* prompt) {
+    std::cout << prompt;
     std::string linha;
     if (!std::getline(std::cin, linha)) {
         emExecucao = false;
@@ -227,4 +232,61 @@ void Menu::venderTerras() {
     int quantidade = lerQuantidade();
     if (!emExecucao) return;
     informarResultado(mercado.venderTerras(*cidade, quantidade), "Terras vendidas com sucesso.");
+}
+
+// ------------------------------------------------------------ Agricultura
+
+void Menu::exibirOpcoesAgricultura() const {
+    std::cout << "\n--- Agricultura ---\n"
+              << "Seus recursos:  " << cidade->getTerras() << " hectares, "
+              << cidade->getServos() << " servos, "
+              << cidade->getGraos() << " graos\n"
+              << "1 - Colher\n"
+              << "2 - Distribuir alimentos\n"
+              << "0 - Voltar\n"
+              << "Escolha uma opcao: ";
+}
+
+void Menu::abrirAgricultura() {
+    bool naAgricultura = true;
+    while (naAgricultura && emExecucao) {
+        exibirOpcoesAgricultura();
+        int opcao = lerOpcao();
+        if (!emExecucao) break;
+        switch (opcao) {
+            case 1: colher();               break;
+            case 2: distribuirAlimentos();  break;
+            case 0: naAgricultura = false;  break;
+            default: std::cout << "Opcao invalida. Tente novamente.\n";
+        }
+    }
+}
+
+// So delega para a Agricultura e imprime o resultado.
+void Menu::colher() {
+    int graosAntes = cidade->getGraos();
+    int hectares = agricultura.processarColheita(*cidade);
+    std::cout << "Colheita realizada: " << hectares << " hectares cultivados.\n"
+              << "Graos: " << graosAntes << " -> " << cidade->getGraos() << "\n";
+}
+
+void Menu::distribuirAlimentos() {
+    std::cout << "Percentual de graos a distribuir ("
+              << agricultura.getPercentualMinimo() << " a "
+              << agricultura.getPercentualMaximo() << ").\n";
+    int percentual = lerInteiro("Percentual: ");
+    if (!emExecucao) return;
+
+    int graosAntes = cidade->getGraos();
+    int servosAntes = cidade->getServos();
+    if (!agricultura.distribuirAlimentos(*cidade, percentual)) {
+        std::cout << "Operacao recusada: o percentual deve estar entre "
+                  << agricultura.getPercentualMinimo() << " e "
+                  << agricultura.getPercentualMaximo() << ".\n";
+        return;
+    }
+    std::cout << "Alimentos distribuidos: "
+              << graosAntes - cidade->getGraos() << " graos consumidos.\n"
+              << "Graos: " << graosAntes << " -> " << cidade->getGraos() << "\n"
+              << "Servos: " << servosAntes << " -> " << cidade->getServos() << "\n";
 }

@@ -3,11 +3,12 @@
 Jogo de estratégia econômica medieval em linha de comando, escrito em **C++17**.
 Projeto do 4º bimestre (SPOTDES), construído em 8 etapas incrementais.
 
-## Estado atual: Etapa 3
+## Estado atual: Etapa 4
 
 - **Etapa 1:** estrutura inicial com as classes `Main` e `Menu` (menu em laço, com validação de entrada).
 - **Etapa 2:** classes `Jogador` e `Cidade`. "Novo jogo" cria um jogador e uma cidade de verdade; "Ver status da cidade" mostra os dados.
 - **Etapa 3:** economia. A `Cidade` ganha florins (1000), terras (10000 hectares) e grãos (500), e a nova classe `Mercado` compra e vende grãos e terras a preço fixo.
+- **Etapa 4:** agricultura e população. A `Cidade` ganha servos (200) e a nova classe `Agricultura` processa a colheita e distribui alimentos (a população cresce 5% ou passa fome).
 
 ## Como compilar e executar
 
@@ -37,19 +38,21 @@ Para limpar os arquivos gerados: `make clean`.
 ├── Makefile
 ├── .gitignore
 ├── LICENSE
-├── casos-de-uso/   diagrama de casos de uso (cumulativo)
-├── uml/            diagrama de classes (cumulativo)
+├── casos-de-uso/   diagrama de casos de uso (cumulativo: .png, .svg e .puml)
+├── uml/            diagrama de classes (cumulativo: .png, .svg, .dot e .puml)
 ├── include/        cabeçalhos (.h), um por classe
 │   ├── Menu.h
 │   ├── Jogador.h
 │   ├── Cidade.h
-│   └── Mercado.h
+│   ├── Mercado.h
+│   └── Agricultura.h
 └── src/            implementações (.cpp), um por classe
     ├── Main.cpp
     ├── Menu.cpp
     ├── Jogador.cpp
     ├── Cidade.cpp
-    └── Mercado.cpp
+    ├── Mercado.cpp
+    └── Agricultura.cpp
 ```
 
 ## Classes
@@ -59,15 +62,16 @@ Para limpar os arquivos gerados: `make clean`.
 | `Main`    | Ponto de entrada: cria o `Menu` e manda executar. |
 | `Menu`    | Exibe as opções, lê e valida a entrada, guarda a partida atual (jogador e cidade) e delega para os serviços. |
 | `Jogador` | Guarda o nome (final) e o título de nobreza (começa como "Cavaleiro"). |
-| `Cidade`  | Guarda nome, ano (1400), dono, florins, terras e grãos. Cada recurso tem `adicionarX` (sempre funciona) e `removerX` (devolve `false` se não houver quantidade suficiente). |
+| `Cidade`  | Guarda nome, ano (1400), dono, florins, terras, grãos e servos. Cada recurso tem `adicionarX` (sempre funciona) e `removerX` (devolve `false` se não houver quantidade suficiente). |
 | `Mercado` | Compra e vende grãos (2 florins/unidade) e terras (1 florim/hectare). Recebe a `Cidade` como parâmetro, sem guardar referência a ela. |
+| `Agricultura` | `processarColheita` (hectares = min(terras, servos × 5); sementes = hectares ÷ 2; produção = hectares × 2) e `distribuirAlimentos` (percentual de 20 a 80). Também recebe a `Cidade` como parâmetro. |
 
 ## Opções do menu
 
 1. Novo jogo (nomes em branco usam "Jogador 1" e "Bolonha")
 2. Ver status da cidade
 3. Mercado (comprar/vender grãos, comprar/vender terras)
-4. Agricultura (Etapa 4)
+4. Agricultura (colher e distribuir alimentos)
 5. Governo (Etapa 5)
 6. Construções (Etapa 6)
 7. Sobre o jogo

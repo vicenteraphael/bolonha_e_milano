@@ -17,6 +17,7 @@ private:
     static constexpr int FLORINS_INICIAIS = 1000;
     static constexpr int TERRAS_INICIAIS  = 10000;
     static constexpr int GRAOS_INICIAIS   = 500;
+    static constexpr int SERVOS_INICIAIS  = 200;
 
     const std::string nome;   // final
     int anoAtual;
@@ -24,6 +25,7 @@ private:
     int florins;
     int terras;
     int graos;
+    int servos;               // populacao
 
 public:
     Cidade(const std::string& nome, Jogador* dono);
@@ -34,6 +36,7 @@ public:
     int getFlorins() const;
     int getTerras() const;
     int getGraos() const;
+    int getServos() const;
 
     void avancarAno();   // ainda nao e chamado por nenhum menu (Etapa 7)
 
@@ -43,6 +46,8 @@ public:
     bool removerTerras(int quantidade);
     void adicionarGraos(int quantidade);
     bool removerGraos(int quantidade);
+    void adicionarServos(int quantidade);
+    bool removerServos(int quantidade);
 
     void exibirStatus() const;
 };
