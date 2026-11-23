@@ -8,7 +8,9 @@ Cidade::Cidade(const std::string& nome, Jogador* dono)
       florins(FLORINS_INICIAIS),
       terras(TERRAS_INICIAIS),
       graos(GRAOS_INICIAIS),
-      servos(SERVOS_INICIAIS) {}
+      servos(SERVOS_INICIAIS),
+      taxaImposto(TAXA_IMPOSTO_INICIAL),
+      nivelJustica(NIVEL_JUSTICA_INICIAL) {}
 
 std::string Cidade::getNome() const { return nome; }
 int Cidade::getAnoAtual() const { return anoAtual; }
@@ -17,6 +19,11 @@ int Cidade::getFlorins() const { return florins; }
 int Cidade::getTerras() const { return terras; }
 int Cidade::getGraos() const { return graos; }
 int Cidade::getServos() const { return servos; }
+int Cidade::getTaxaImposto() const { return taxaImposto; }
+std::string Cidade::getNivelJustica() const { return nivelJustica; }
+
+void Cidade::setTaxaImposto(int taxa) { taxaImposto = taxa; }
+void Cidade::setNivelJustica(const std::string& nivel) { nivelJustica = nivel; }
 
 void Cidade::avancarAno() {
     anoAtual++;
@@ -73,5 +80,7 @@ void Cidade::exibirStatus() const {
               << "Terras:     " << terras << " hectares\n"
               << "Graos:      " << graos << " unidades\n"
               << "Servos:     " << servos << "\n"
+              << "Imposto:    " << taxaImposto << "%\n"
+              << "Justica:    " << nivelJustica << "\n"
               << "------------------------\n";
 }

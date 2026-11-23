@@ -6,6 +6,7 @@
 #include "Cidade.h"
 #include "Mercado.h"
 #include "Agricultura.h"
+#include "Governo.h"
 
 // Orquestra o jogo: mostra opcoes, le e valida a entrada e delega para a classe
 // certa. Guarda a partida atual (jogador + cidade) e uma instancia de cada servico.
@@ -17,6 +18,7 @@ private:
     std::unique_ptr<Cidade> cidade;     // nenhuma ate "Novo jogo"
     const Mercado mercado;              // servico de compra e venda (final)
     const Agricultura agricultura;      // servico de colheita e alimentos (final)
+    const Governo governo;              // servico de impostos e justica (final)
 
     void exibirOpcoes() const;
     int lerOpcao();
@@ -43,6 +45,13 @@ private:
     int lerInteiro(const char* prompt);
     void colher();
     void distribuirAlimentos();
+
+    // Etapa 5: submenu do Governo
+    void abrirGoverno();
+    void exibirOpcoesGoverno() const;
+    void arrecadarImpostos();
+    void definirTaxaImposto();
+    void definirJustica();
 
 public:
     Menu();

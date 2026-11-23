@@ -1,0 +1,157 @@
+@startuml diagrama-de-classes-etapa-5
+title Bolonha e Milano — Diagrama de classes (Etapa 5)
+
+' ---------- estilo ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam defaultFontName DejaVu Sans
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 60
+skinparam ArrowColor #202859
+skinparam ArrowFontColor #202859
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #202859
+  BorderThickness 2
+  HeaderBackgroundColor #202859
+  FontColor #202859
+  AttributeFontColor #1B2236
+  AttributeFontName DejaVu Sans Mono
+  AttributeFontSize 12
+}
+skinparam stereotypeCBackgroundColor #E8A33D
+hide circle
+hide empty members
+
+' ---------- classes ----------
+class Main {
+  + main(): int
+}
+
+class Menu {
+  - emExecucao: bool
+  - jogador: Jogador
+  - cidade: Cidade
+  - mercado: Mercado {readOnly}
+  - agricultura: Agricultura {readOnly}
+  - governo: Governo {readOnly}
+  --
+  + executar(): void
+  - exibirOpcoes(): void
+  - lerOpcao(): int
+  - processarOpcao(opcao: int): void
+  - iniciarNovoJogo(): void
+  - exibirStatus(): void
+  - exibirSobre(): void
+  - abrirMercado(): void
+  - lerQuantidade(): int
+  - comprarGraos() / venderGraos(): void
+  - comprarTerras() / venderTerras(): void
+  - abrirAgricultura(): void
+  - colher(): void
+  - distribuirAlimentos(): void
+  - abrirGoverno(): void
+  - arrecadarImpostos(): void
+  - definirTaxaImposto(): void
+  - definirJustica(): void
+}
+
+class Jogador {
+  - nome: string {readOnly}
+  - titulo: string
+  --
+  + getNome(): string
+  + getTitulo(): string
+  + setTitulo(titulo: string): void
+}
+
+class Cidade {
+  - {static} ANO_INICIAL: int = 1400
+  - {static} FLORINS_INICIAIS: int = 1000
+  - {static} TERRAS_INICIAIS: int = 10000
+  - {static} GRAOS_INICIAIS: int = 500
+  - {static} SERVOS_INICIAIS: int = 200
+  - {static} TAXA_IMPOSTO_INICIAL: int = 10
+  - {static} NIVEL_JUSTICA_INICIAL: string = "Moderada"
+  - nome: string {readOnly}
+  - anoAtual: int
+  - dono: Jogador {readOnly}
+  - florins: int
+  - terras: int
+  - graos: int
+  - servos: int
+  - taxaImposto: int
+  - nivelJustica: string
+  --
+  + getNome() / getAnoAtual() / getDono()
+  + getFlorins() / getTerras()
+  + getGraos() / getServos()
+  + getTaxaImposto() / setTaxaImposto(taxa)
+  + getNivelJustica() / setNivelJustica(nivel)
+  + avancarAno(): void
+  + adicionarFlorins(qtd) / removerFlorins(qtd): bool
+  + adicionarTerras(qtd) / removerTerras(qtd): bool
+  + adicionarGraos(qtd) / removerGraos(qtd): bool
+  + adicionarServos(qtd) / removerServos(qtd): bool
+  + exibirStatus(): void
+}
+
+class Mercado {
+  - {static} PRECO_GRAO: int = 2
+  - {static} PRECO_TERRA: int = 1
+  --
+  + getPrecoGrao(): int
+  + getPrecoTerra(): int
+  + comprarGraos(c: Cidade, qtd): bool
+  + venderGraos(c: Cidade, qtd): bool
+  + comprarTerras(c: Cidade, qtd): bool
+  + venderTerras(c: Cidade, qtd): bool
+}
+
+class Agricultura {
+  - {static} HECTARES_POR_SERVO: int = 5
+  - {static} RENDIMENTO_POR_HECTARE: int = 2
+  - {static} SERVOS_POR_GRAO: int = 5
+  - {static} CRESCIMENTO_PERCENTUAL: int = 5
+  - {static} PERCENTUAL_MINIMO: int = 20
+  - {static} PERCENTUAL_MAXIMO: int = 80
+  --
+  + processarColheita(c: Cidade): int
+  + distribuirAlimentos(c: Cidade, %): bool
+  + getPercentualMinimo(): int
+  + getPercentualMaximo(): int
+}
+
+class Governo <<nova na Etapa 5>> #FFF8EC {
+  - {static} TAXA_MAXIMA: int = 50
+  - {static} MULTIPLICADOR_JUSTA: double = 0.8
+  - {static} MULTIPLICADOR_MODERADA: double = 1.0
+  - {static} MULTIPLICADOR_SEVERA: double = 1.3
+  --
+  + arrecadarImpostos(c: Cidade): int
+  + definirTaxaImposto(c: Cidade, taxa): bool
+  + definirJustica(c: Cidade, nivel): bool
+  + getTaxaMaxima(): int
+  - multiplicadorPara(nivel): double
+}
+
+' ---------- relacionamentos ----------
+Main ..> Menu : cria
+Menu *-- Jogador : possui
+Menu *-- Cidade : possui
+Menu *-- Mercado : possui
+Menu *-- Agricultura : possui
+Menu *-- Governo : possui
+Cidade --> Jogador : dono
+Mercado ..> Cidade : usa
+Agricultura ..> Cidade : usa
+Governo ..> Cidade : usa
+
+note bottom of Cidade
+  Linha tracejada = dependência:
+  a Cidade chega como parâmetro,
+  os serviços nunca a guardam.
+end note
+@enduml

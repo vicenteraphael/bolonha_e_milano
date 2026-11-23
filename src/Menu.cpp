@@ -32,7 +32,7 @@ const char* const NOME_PADRAO_JOGADOR = "Jogador 1";
 const char* const NOME_PADRAO_CIDADE  = "Bolonha";
 }  // namespace
 
-Menu::Menu() : emExecucao(true), mercado(), agricultura() {}
+Menu::Menu() : emExecucao(true), mercado(), agricultura(), governo() {}
 
 void Menu::executar() {
     while (emExecucao) {
@@ -86,7 +86,7 @@ void Menu::processarOpcao(int opcao) {
             if (exigirPartida()) abrirAgricultura();
             break;
         case 5:
-            if (exigirPartida()) exibirNaoImplementado("Governo", 5);
+            if (exigirPartida()) abrirGoverno();
             break;
         case 6:
             if (exigirPartida()) exibirNaoImplementado("Construcoes", 6);
@@ -289,4 +289,81 @@ void Menu::distribuirAlimentos() {
               << graosAntes - cidade->getGraos() << " graos consumidos.\n"
               << "Graos: " << graosAntes << " -> " << cidade->getGraos() << "\n"
               << "Servos: " << servosAntes << " -> " << cidade->getServos() << "\n";
+}
+
+// ---------------------------------------------------------------- Governo
+
+void Menu::exibirOpcoesGoverno() const {
+    std::cout << "\n--- Governo ---\n"
+              << "Seus recursos:  " << cidade->getFlorins() << " florins, "
+              << cidade->getServos() << " servos\n"
+              << "Configuracao:   imposto " << cidade->getTaxaImposto()
+              << "%, justica " << cidade->getNivelJustica() << "\n"
+              << "1 - Arrecadar impostos\n"
+              << "2 - Definir taxa de imposto\n"
+              << "3 - Definir nivel de justica\n"
+              << "0 - Voltar\n"
+              << "Escolha uma opcao: ";
+}
+
+void Menu::abrirGoverno() {
+    bool noGoverno = true;
+    while (noGoverno && emExecucao) {
+        exibirOpcoesGoverno();
+        int opcao = lerOpcao();
+        if (!emExecucao) break;
+        switch (opcao) {
+            case 1: arrecadarImpostos();   break;
+            case 2: definirTaxaImposto();  break;
+            case 3: definirJustica();      break;
+            case 0: noGoverno = false;     break;
+            default: std::cout << "Opcao invalida. Tente novamente.\n";
+        }
+    }
+}
+
+// So delega para o Governo e imprime o resultado.
+void Menu::arrecadarImpostos() {
+    int florinsAntes = cidade->getFlorins();
+    int arrecadado = governo.arrecadarImpostos(*cidade);
+    std::cout << "Impostos arrecadados: " << arrecadado << " florins.\n"
+              << "Florins: " << florinsAntes << " -> " << cidade->getFlorins() << "\n";
+}
+
+void Menu::definirTaxaImposto() {
+    std::cout << "A taxa deve estar entre 0 e " << governo.getTaxaMaxima() << " (%).\n";
+    int taxa = lerInteiro("Nova taxa: ");
+    if (!emExecucao) return;
+
+    if (governo.definirTaxaImposto(*cidade, taxa)) {
+        std::cout << "Taxa de imposto definida: " << cidade->getTaxaImposto() << "%.\n";
+    } else {
+        std::cout << "Operacao recusada: a taxa deve estar entre 0 e "
+                  << governo.getTaxaMaxima() << ".\n";
+    }
+}
+
+// O nivel de justica e escolhido num submenu numerado, nunca digitado livremente.
+void Menu::definirJustica() {
+    std::cout << "\nNivel de justica:\n"
+              << "1 - Justa (arrecada 20% a menos)\n"
+              << "2 - Moderada (arrecadacao padrao)\n"
+              << "3 - Severa (arrecada 30% a mais)\n";
+    int escolha = lerInteiro("Escolha uma opcao: ");
+    if (!emExecucao) return;
+
+    std::string nivel;
+    switch (escolha) {
+        case 1: nivel = "Justa";    break;
+        case 2: nivel = "Moderada"; break;
+        case 3: nivel = "Severa";   break;
+        default:
+            std::cout << "Opcao invalida. O nivel de justica nao foi alterado.\n";
+            return;
+    }
+    if (governo.definirJustica(*cidade, nivel)) {
+        std::cout << "Nivel de justica definido: " << cidade->getNivelJustica() << ".\n";
+    } else {
+        std::cout << "Operacao recusada.\n";
+    }
 }

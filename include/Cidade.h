@@ -18,6 +18,8 @@ private:
     static constexpr int TERRAS_INICIAIS  = 10000;
     static constexpr int GRAOS_INICIAIS   = 500;
     static constexpr int SERVOS_INICIAIS  = 200;
+    static constexpr int TAXA_IMPOSTO_INICIAL = 10;
+    static constexpr const char* NIVEL_JUSTICA_INICIAL = "Moderada";
 
     const std::string nome;   // final
     int anoAtual;
@@ -26,6 +28,8 @@ private:
     int terras;
     int graos;
     int servos;               // populacao
+    int taxaImposto;          // configuracao (%), nao e um recurso acumulavel
+    std::string nivelJustica; // configuracao: "Justa", "Moderada" ou "Severa"
 
 public:
     Cidade(const std::string& nome, Jogador* dono);
@@ -37,6 +41,12 @@ public:
     int getTerras() const;
     int getGraos() const;
     int getServos() const;
+    int getTaxaImposto() const;
+    std::string getNivelJustica() const;
+
+    // Configuracoes: so getter/setter simples (a validacao e do Governo).
+    void setTaxaImposto(int taxa);
+    void setNivelJustica(const std::string& nivel);
 
     void avancarAno();   // ainda nao e chamado por nenhum menu (Etapa 7)
 

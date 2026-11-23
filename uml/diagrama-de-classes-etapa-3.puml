@@ -1,0 +1,108 @@
+@startuml diagrama-de-classes-etapa-3
+title Bolonha e Milano — Diagrama de classes (Etapa 3)
+
+' ---------- estilo ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam defaultFontName DejaVu Sans
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 60
+skinparam ArrowColor #202859
+skinparam ArrowFontColor #202859
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #202859
+  BorderThickness 2
+  HeaderBackgroundColor #202859
+  FontColor #202859
+  AttributeFontColor #1B2236
+  AttributeFontName DejaVu Sans Mono
+  AttributeFontSize 12
+}
+skinparam stereotypeCBackgroundColor #E8A33D
+hide circle
+hide empty members
+
+' ---------- classes ----------
+class Main {
+  + main(): int
+}
+
+class Menu {
+  - emExecucao: bool
+  - jogador: Jogador
+  - cidade: Cidade
+  - mercado: Mercado {readOnly}
+  --
+  + executar(): void
+  - exibirOpcoes(): void
+  - lerOpcao(): int
+  - processarOpcao(opcao: int): void
+  - iniciarNovoJogo(): void
+  - exibirStatus(): void
+  - exibirSobre(): void
+  - abrirMercado(): void
+  - lerQuantidade(): int
+  - comprarGraos() / venderGraos(): void
+  - comprarTerras() / venderTerras(): void
+}
+
+class Jogador {
+  - nome: string {readOnly}
+  - titulo: string
+  --
+  + getNome(): string
+  + getTitulo(): string
+  + setTitulo(titulo: string): void
+}
+
+class Cidade {
+  - {static} ANO_INICIAL: int = 1400
+  - {static} FLORINS_INICIAIS: int = 1000
+  - {static} TERRAS_INICIAIS: int = 10000
+  - {static} GRAOS_INICIAIS: int = 500
+  - nome: string {readOnly}
+  - anoAtual: int
+  - dono: Jogador {readOnly}
+  - florins: int
+  - terras: int
+  - graos: int
+  --
+  + getNome() / getAnoAtual() / getDono()
+  + getFlorins() / getTerras()
+  + getGraos()
+  + avancarAno(): void
+  + adicionarFlorins(qtd) / removerFlorins(qtd): bool
+  + adicionarTerras(qtd) / removerTerras(qtd): bool
+  + adicionarGraos(qtd) / removerGraos(qtd): bool
+  + exibirStatus(): void
+}
+
+class Mercado <<nova na Etapa 3>> #FFF8EC {
+  - {static} PRECO_GRAO: int = 2
+  - {static} PRECO_TERRA: int = 1
+  --
+  + getPrecoGrao(): int
+  + getPrecoTerra(): int
+  + comprarGraos(c: Cidade, qtd): bool
+  + venderGraos(c: Cidade, qtd): bool
+  + comprarTerras(c: Cidade, qtd): bool
+  + venderTerras(c: Cidade, qtd): bool
+}
+
+' ---------- relacionamentos ----------
+Main ..> Menu : cria
+Menu *-- Jogador : possui
+Menu *-- Cidade : possui
+Menu *-- Mercado : possui
+Cidade --> Jogador : dono
+Mercado ..> Cidade : usa
+
+note bottom of Cidade
+  Linha tracejada = dependência:
+  a Cidade chega como parâmetro,
+  os serviços nunca a guardam.
+end note
+@enduml
