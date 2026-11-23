@@ -10,7 +10,9 @@ Cidade::Cidade(const std::string& nome, Jogador* dono)
       graos(GRAOS_INICIAIS),
       servos(SERVOS_INICIAIS),
       taxaImposto(TAXA_IMPOSTO_INICIAL),
-      nivelJustica(NIVEL_JUSTICA_INICIAL) {}
+      nivelJustica(NIVEL_JUSTICA_INICIAL),
+      soldados(SOLDADOS_INICIAIS),
+      construcoes(CONSTRUCOES_INICIAIS) {}
 
 std::string Cidade::getNome() const { return nome; }
 int Cidade::getAnoAtual() const { return anoAtual; }
@@ -19,6 +21,8 @@ int Cidade::getFlorins() const { return florins; }
 int Cidade::getTerras() const { return terras; }
 int Cidade::getGraos() const { return graos; }
 int Cidade::getServos() const { return servos; }
+int Cidade::getSoldados() const { return soldados; }
+int Cidade::getConstrucoes() const { return construcoes; }
 int Cidade::getTaxaImposto() const { return taxaImposto; }
 std::string Cidade::getNivelJustica() const { return nivelJustica; }
 
@@ -71,6 +75,26 @@ bool Cidade::removerServos(int quantidade) {
     return true;
 }
 
+void Cidade::adicionarSoldados(int quantidade) {
+    if (quantidade > 0) soldados += quantidade;
+}
+
+bool Cidade::removerSoldados(int quantidade) {
+    if (quantidade <= 0 || quantidade > soldados) return false;
+    soldados -= quantidade;
+    return true;
+}
+
+void Cidade::adicionarConstrucoes(int quantidade) {
+    if (quantidade > 0) construcoes += quantidade;
+}
+
+bool Cidade::removerConstrucoes(int quantidade) {
+    if (quantidade <= 0 || quantidade > construcoes) return false;
+    construcoes -= quantidade;
+    return true;
+}
+
 void Cidade::exibirStatus() const {
     std::cout << "\n--- Status da cidade ---\n"
               << "Cidade:     " << nome << "\n"
@@ -82,5 +106,7 @@ void Cidade::exibirStatus() const {
               << "Servos:     " << servos << "\n"
               << "Imposto:    " << taxaImposto << "%\n"
               << "Justica:    " << nivelJustica << "\n"
+              << "Soldados:   " << soldados << "\n"
+              << "Construcoes: " << construcoes << "\n"
               << "------------------------\n";
 }

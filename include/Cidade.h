@@ -20,6 +20,8 @@ private:
     static constexpr int SERVOS_INICIAIS  = 200;
     static constexpr int TAXA_IMPOSTO_INICIAL = 10;
     static constexpr const char* NIVEL_JUSTICA_INICIAL = "Moderada";
+    static constexpr int SOLDADOS_INICIAIS    = 0;
+    static constexpr int CONSTRUCOES_INICIAIS = 0;
 
     const std::string nome;   // final
     int anoAtual;
@@ -30,6 +32,8 @@ private:
     int servos;               // populacao
     int taxaImposto;          // configuracao (%), nao e um recurso acumulavel
     std::string nivelJustica; // configuracao: "Justa", "Moderada" ou "Severa"
+    int soldados;             // recurso acumulavel (forca de defesa)
+    int construcoes;          // recurso acumulavel (infraestrutura)
 
 public:
     Cidade(const std::string& nome, Jogador* dono);
@@ -41,6 +45,8 @@ public:
     int getTerras() const;
     int getGraos() const;
     int getServos() const;
+    int getSoldados() const;
+    int getConstrucoes() const;
     int getTaxaImposto() const;
     std::string getNivelJustica() const;
 
@@ -58,6 +64,10 @@ public:
     bool removerGraos(int quantidade);
     void adicionarServos(int quantidade);
     bool removerServos(int quantidade);
+    void adicionarSoldados(int quantidade);
+    bool removerSoldados(int quantidade);
+    void adicionarConstrucoes(int quantidade);
+    bool removerConstrucoes(int quantidade);
 
     void exibirStatus() const;
 };

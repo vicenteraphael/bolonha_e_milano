@@ -32,7 +32,7 @@ const char* const NOME_PADRAO_JOGADOR = "Jogador 1";
 const char* const NOME_PADRAO_CIDADE  = "Bolonha";
 }  // namespace
 
-Menu::Menu() : emExecucao(true), mercado(), agricultura(), governo() {}
+Menu::Menu() : emExecucao(true), mercado(), agricultura(), governo(), construcoes() {}
 
 void Menu::executar() {
     while (emExecucao) {
@@ -89,7 +89,7 @@ void Menu::processarOpcao(int opcao) {
             if (exigirPartida()) abrirGoverno();
             break;
         case 6:
-            if (exigirPartida()) exibirNaoImplementado("Construcoes", 6);
+            if (exigirPartida()) abrirConstrucoes();
             break;
         case 7:
             exibirSobre();
@@ -137,10 +137,6 @@ bool Menu::exigirPartida() const {
 void Menu::exibirStatus() const {
     if (!exigirPartida()) return;
     cidade->exibirStatus();
-}
-
-void Menu::exibirNaoImplementado(const char* nome, int etapa) const {
-    std::cout << nome << " ainda nao esta disponivel (Etapa " << etapa << ").\n";
 }
 
 void Menu::exibirSobre() const {
@@ -365,5 +361,68 @@ void Menu::definirJustica() {
         std::cout << "Nivel de justica definido: " << cidade->getNivelJustica() << ".\n";
     } else {
         std::cout << "Operacao recusada.\n";
+    }
+}
+
+// ------------------------------------------------------------ Construcoes
+
+void Menu::exibirOpcoesConstrucoes() const {
+    std::cout << "\n--- Construcoes ---\n"
+              << "Custo:          soldado = " << construcoes.getPrecoSoldado()
+              << " florins + 1 servo; construcao = " << construcoes.getPrecoConstrucao()
+              << " florins\n"
+              << "Seus recursos:  " << cidade->getFlorins() << " florins, "
+              << cidade->getServos() << " servos, "
+              << cidade->getSoldados() << " soldados, "
+              << cidade->getConstrucoes() << " construcoes\n"
+              << "1 - Recrutar soldados\n"
+              << "2 - Construir\n"
+              << "0 - Voltar\n"
+              << "Escolha uma opcao: ";
+}
+
+void Menu::abrirConstrucoes() {
+    bool naConstrucoes = true;
+    while (naConstrucoes && emExecucao) {
+        exibirOpcoesConstrucoes();
+        int opcao = lerOpcao();
+        if (!emExecucao) break;
+        switch (opcao) {
+            case 1: recrutarSoldados();     break;
+            case 2: construir();            break;
+            case 0: naConstrucoes = false;  break;
+            default: std::cout << "Opcao invalida. Tente novamente.\n";
+        }
+    }
+}
+
+// So delega para Construcoes e imprime o resultado.
+void Menu::recrutarSoldados() {
+    int quantidade = lerQuantidade();
+    if (!emExecucao) return;
+
+    int florinsAntes = cidade->getFlorins();
+    int servosAntes = cidade->getServos();
+    if (construcoes.recrutarSoldados(*cidade, quantidade)) {
+        std::cout << "Soldados recrutados: " << quantidade << ".\n"
+                  << "Florins: " << florinsAntes << " -> " << cidade->getFlorins() << "\n"
+                  << "Servos: " << servosAntes << " -> " << cidade->getServos() << "\n"
+                  << "Soldados: " << cidade->getSoldados() << "\n";
+    } else {
+        std::cout << "Operacao recusada: quantidade invalida ou faltam florins/servos.\n";
+    }
+}
+
+void Menu::construir() {
+    int quantidade = lerQuantidade();
+    if (!emExecucao) return;
+
+    int florinsAntes = cidade->getFlorins();
+    if (construcoes.construir(*cidade, quantidade)) {
+        std::cout << "Construcoes erguidas: " << quantidade << ".\n"
+                  << "Florins: " << florinsAntes << " -> " << cidade->getFlorins() << "\n"
+                  << "Construcoes: " << cidade->getConstrucoes() << "\n";
+    } else {
+        std::cout << "Operacao recusada: quantidade invalida ou faltam florins.\n";
     }
 }

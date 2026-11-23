@@ -7,6 +7,7 @@
 #include "Mercado.h"
 #include "Agricultura.h"
 #include "Governo.h"
+#include "Construcoes.h"
 
 // Orquestra o jogo: mostra opcoes, le e valida a entrada e delega para a classe
 // certa. Guarda a partida atual (jogador + cidade) e uma instancia de cada servico.
@@ -19,6 +20,7 @@ private:
     const Mercado mercado;              // servico de compra e venda (final)
     const Agricultura agricultura;      // servico de colheita e alimentos (final)
     const Governo governo;              // servico de impostos e justica (final)
+    const Construcoes construcoes;      // servico de soldados e construcoes (final)
 
     void exibirOpcoes() const;
     int lerOpcao();
@@ -26,7 +28,6 @@ private:
     void iniciarNovoJogo();
     void exibirStatus() const;
     bool exigirPartida() const;          // avisa e devolve false se nao ha partida
-    void exibirNaoImplementado(const char* nome, int etapa) const;
     void exibirSobre() const;
 
     // Etapa 3: submenu do Mercado
@@ -52,6 +53,12 @@ private:
     void arrecadarImpostos();
     void definirTaxaImposto();
     void definirJustica();
+
+    // Etapa 6: submenu de Construcoes
+    void abrirConstrucoes();
+    void exibirOpcoesConstrucoes() const;
+    void recrutarSoldados();
+    void construir();
 
 public:
     Menu();
