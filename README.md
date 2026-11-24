@@ -3,7 +3,7 @@
 Jogo de estratégia econômica medieval em linha de comando, escrito em **C++17**.
 Projeto do 4º bimestre (SPOTDES), construído em 8 etapas incrementais.
 
-## Estado atual: Etapa 7
+## Estado atual: Etapa 8 (entrega final)
 
 - **Etapa 1:** estrutura inicial com as classes `Main` e `Menu` (menu em laço, com validação de entrada).
 - **Etapa 2:** classes `Jogador` e `Cidade`. "Novo jogo" cria um jogador e uma cidade de verdade; "Ver status da cidade" mostra os dados.
@@ -12,6 +12,7 @@ Projeto do 4º bimestre (SPOTDES), construído em 8 etapas incrementais.
 - **Etapa 5:** impostos e governo. A `Cidade` ganha `taxaImposto` (10%) e `nivelJustica` ("Moderada"), que são configurações (só getter/setter), e a nova classe `Governo` arrecada impostos e valida a taxa (0 a 50) e o nível de justiça.
 - **Etapa 6:** construções e soldados. A `Cidade` ganha `soldados` e `construcoes` (0 iniciais, recursos acumuláveis) e a nova classe `Construcoes` recruta soldados (5 florins + 1 servo cada, validando os dois recursos antes de alterar qualquer um) e constrói (20 florins cada).
 - **Etapa 7:** rodadas, múltiplos jogadores e vitória. A nova classe `Partida` guarda de 1 a 4 cidades, controla a vez e fecha o ano quando o último jogador encerra o turno. A `Cidade` ganha os indicadores "já colheu / já arrecadou neste ano" (colher e arrecadar passam a valer uma vez por ano). A nova classe `Nobreza` calcula o prestígio e promove o governante (no máximo um título por ano). Vence quem virar Rei/Rainha primeiro, ou o melhor colocado ao fim de 1410.
+- **Etapa 8:** integração, testes e entrega. Nova classe `Testes` (com `main` próprio, sem biblioteca externa) no padrão preparar → executar → verificar, com casos de erro para cada classe de regra. O `Menu` foi refatorado sem mudar o comportamento: `lerInteiro()` concentra a leitura/conversão e `exigirJogoEmAndamento()` concentra o aviso "Nao ha partida em andamento". Diagramas finais, incluindo um diagrama de sequência.
 
 ## Como compilar e executar
 
@@ -33,6 +34,22 @@ g++ -std=c++17 -Wall -Wextra -I include -o build/bolonhaemilano src/*.cpp
 
 Para limpar os arquivos gerados: `make clean`.
 
+## Como rodar os testes
+
+```
+make test
+```
+
+Sem Make:
+
+```
+mkdir -p build
+g++ -std=c++17 -Wall -Wextra -I include -I tests -o build/testes $(ls src/*.cpp | grep -v Main.cpp) tests/Testes.cpp
+./build/testes
+```
+
+Cada verificação imprime `[OK]` ou `[FALHA]` com a descrição da regra. No fim aparece `Aprovados: N | Reprovados: M` (hoje: 74 e 0); se alguma falhar, o programa termina com código 1. A classe `Testes` tem o seu próprio `main` e usa tudo de `src/` exceto o `Main.cpp` do jogo; nenhuma classe do jogo conhece `Testes`.
+
 ## Estrutura do repositório
 
 ```
@@ -42,7 +59,8 @@ Para limpar os arquivos gerados: `make clean`.
 ├── .gitignore
 ├── LICENSE
 ├── casos-de-uso/   diagrama de casos de uso (cumulativo, um por etapa: .png, .svg e .puml)
-├── uml/            diagrama de classes (cumulativo, um por etapa: .png, .svg, .dot e .puml)
+├── uml/            diagramas de classes (cumulativos, um por etapa: .png, .svg, .dot e .puml) e de sequência (Etapa 8)
+├── tests/          testes automatizados (Testes.h e Testes.cpp, com main próprio)
 ├── include/        cabeçalhos (.h), um por classe
 │   ├── Menu.h
 │   ├── Jogador.h
@@ -79,6 +97,7 @@ Para limpar os arquivos gerados: `make clean`.
 | `Governo` | `arrecadarImpostos` (base = servos × taxa ÷ 100, vezes o fator da justiça: Justa 0,8 · Moderada 1,0 · Severa 1,3), `definirTaxaImposto` (0 a 50) e `definirJustica` ("Justa", "Moderada" ou "Severa"). Só arrecada uma vez por ano (devolve -1 se já arrecadou). Também recebe a `Cidade` como parâmetro. |
 | `Construcoes` | `recrutarSoldados` (5 florins + 1 servo por soldado; valida florins **e** servos antes de debitar qualquer um) e `construir` (20 florins por construção). Também recebe a `Cidade` como parâmetro. |
 | `Nobreza` | Prestígio = construções × 10 + soldados × 2 + servos + terras ÷ 100 (florins não contam). Promove o governante quando o prestígio alcança o mínimo do próximo título (400, 550, 700, 850, 1000), no máximo um título por chamada. |
+| `Testes` | Testes automatizados (`make test`): `verificar`, `novaCidade` e um grupo de testes por classe de regra. Existe só para a verificação; o jogo funciona igual sem ela. |
 | `Partida` | Guarda de 1 a 4 jogadores/cidades, controla a vez (`passarTurno`), fecha o ano (`encerrarAno`), detecta o fim de jogo (`terminou`: alguém virou Rei/Rainha ou o ano passou de 1410) e escolhe o vencedor (título mais alto; empate: maior prestígio). |
 
 ## Opções do menu
@@ -96,6 +115,6 @@ Para limpar os arquivos gerados: `make clean`.
 
 As opções 2 a 8 avisam quando ainda não há partida em andamento.
 
-## Commits e Tags
+## Commits
 
 Mensagens no formato `Etapa N: descrição`.

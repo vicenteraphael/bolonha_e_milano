@@ -65,16 +65,10 @@ void Menu::exibirOpcoes() const {
               << "Escolha uma opcao: ";
 }
 
-// Devolve -1 se a entrada nao for um numero inteiro valido.
-// No fim da entrada (EOF) encerra o jogo, para nao ficar em laco infinito.
+// Le a opcao de um menu (o prompt ja foi impresso por exibirOpcoes*).
+// Devolve -1 se nao for um inteiro valido; no fim da entrada (EOF) encerra o jogo.
 int Menu::lerOpcao() {
-    std::string linha;
-    if (!std::getline(std::cin, linha)) {
-        emExecucao = false;
-        return 0;
-    }
-    int valor = 0;
-    return paraInteiro(linha, valor) ? valor : -1;
+    return lerInteiro("");
 }
 
 void Menu::processarOpcao(int opcao) {
@@ -86,22 +80,22 @@ void Menu::processarOpcao(int opcao) {
             exibirStatus();
             break;
         case 3:
-            if (exigirPartida()) abrirMercado();
+            if (exigirJogoEmAndamento()) abrirMercado();
             break;
         case 4:
-            if (exigirPartida()) abrirAgricultura();
+            if (exigirJogoEmAndamento()) abrirAgricultura();
             break;
         case 5:
-            if (exigirPartida()) abrirGoverno();
+            if (exigirJogoEmAndamento()) abrirGoverno();
             break;
         case 6:
-            if (exigirPartida()) abrirConstrucoes();
+            if (exigirJogoEmAndamento()) abrirConstrucoes();
             break;
         case 7:
-            if (exigirPartida()) encerrarTurno();
+            if (exigirJogoEmAndamento()) encerrarTurno();
             break;
         case 8:
-            if (exigirPartida()) exibirClassificacao();
+            if (exigirJogoEmAndamento()) exibirClassificacao();
             break;
         case 9:
             exibirSobre();
@@ -162,7 +156,7 @@ void Menu::anunciarVez() const {
               << cidade->getAnoAtual() << ".\n";
 }
 
-bool Menu::exigirPartida() const {
+bool Menu::exigirJogoEmAndamento() const {
     if (!partida) {
         std::cout << "Nao ha partida em andamento. Escolha 'Novo jogo' primeiro.\n";
         return false;
@@ -171,7 +165,7 @@ bool Menu::exigirPartida() const {
 }
 
 void Menu::exibirStatus() const {
-    if (!exigirPartida()) return;
+    if (!exigirJogoEmAndamento()) return;
     anunciarVez();
     cidade->exibirStatus();
 }

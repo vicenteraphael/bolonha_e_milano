@@ -30,7 +30,7 @@ private:
     void processarOpcao(int opcao);
     void iniciarNovoJogo();
     void exibirStatus() const;
-    bool exigirPartida() const;          // avisa e devolve false se nao ha partida
+    bool exigirJogoEmAndamento() const;          // avisa e devolve false se nao ha partida
     void exibirSobre() const;
 
     // Etapa 3: submenu do Mercado
