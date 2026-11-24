@@ -1,0 +1,38 @@
+@startuml diagrama-de-sequencia-carregar-jogo
+title Bolonha e Milano — Carregar jogo (extras)
+
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam ArrowColor #202859
+skinparam sequence {
+  LifeLineBorderColor #202859
+  ParticipantBackgroundColor #202859
+  ParticipantFontColor #FFFFFF
+  ParticipantBorderColor #202859
+  ActorBorderColor #202859
+}
+
+actor Jogador
+participant ":Menu" as Menu
+participant ":Persistencia" as Persistencia
+participant ":Partida" as Partida
+participant ":Cidade" as Cidade
+participant ":Governo" as Governo
+participant ":Terminal" as Terminal
+
+Jogador -> Menu : opção 10 (Carregar jogo)
+Menu --> Jogador : pede o nome do arquivo
+Jogador -> Menu : savegame.txt
+Menu -> Persistencia : carregarArquivo(caminho, erro)
+Persistencia -> Partida : new Partida()
+loop para cada [cidade] do arquivo (valor inválido aborta)
+  Persistencia -> Cidade : new Cidade(nome, dono) + restaurarEstado(e)
+  Persistencia -> Governo : definirTaxaImposto() / definirJustica()
+  Persistencia -> Partida : adicionarCidade(jogador, cidade)
+end
+Persistencia -> Partida : restaurarVez(vez)
+Persistencia --> Menu : partida (ou nullptr + erro: a atual é mantida)
+Menu -> Partida : getCidadeAtual()
+Menu --> Jogador : "Jogo carregado" + de quem é a vez
+Menu -> Terminal : pausar()
+@enduml

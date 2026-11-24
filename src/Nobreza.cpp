@@ -1,6 +1,9 @@
 #include "Nobreza.h"
 #include <limits>
 
+// Definicao fora da classe (exigida por compiladores que nao tratam constexpr static como inline).
+constexpr int Nobreza::PRESTIGIO_MINIMO[6];
+
 int Nobreza::calcularPrestigio(const Cidade& cidade) const {
     long long prestigio =
         static_cast<long long>(cidade.getConstrucoes()) * PESO_CONSTRUCAO +

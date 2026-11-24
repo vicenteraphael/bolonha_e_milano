@@ -12,3 +12,6 @@ bolonhaemilano
 *.swp
 .DS_Store
 Thumbs.db
+# Jogos salvos
+savegame*.txt
+*.sav.txt

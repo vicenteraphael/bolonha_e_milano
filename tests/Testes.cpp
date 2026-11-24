@@ -1,5 +1,7 @@
 #include "Testes.h"
+#include <cstdio>
 #include <iostream>
+#include <sstream>
 #include "Agricultura.h"
 #include "Construcoes.h"
 #include "Governo.h"
@@ -7,6 +9,8 @@
 #include "Mercado.h"
 #include "Nobreza.h"
 #include "Partida.h"
+#include "Persistencia.h"
+#include "Terminal.h"
 
 int Testes::aprovados = 0;
 int Testes::reprovados = 0;
@@ -55,6 +59,18 @@ void Testes::testarCidade() {
     verificar("avancarAno soma 1 ao ano", c.getAnoAtual() == 1401);
     verificar("avancarAno libera colheita e impostos de novo",
               !c.isColheitaFeita() && !c.isImpostosArrecadados());
+
+    EstadoCidade ruim = c.getEstado();
+    ruim.florins = -1;
+    verificar("restaurarEstado com recurso negativo e recusado", !c.restaurarEstado(ruim));
+    ruim = c.getEstado();
+    ruim.ano = 1399;
+    verificar("restaurarEstado com ano antes de 1400 e recusado", !c.restaurarEstado(ruim));
+    verificar("... e a cidade nao muda", c.getFlorins() == 700 && c.getAnoAtual() == 1401);
+    EstadoCidade bom = c.getEstado();
+    bom.florins = 123; bom.soldados = 7; bom.colheitaFeita = true;
+    verificar("restaurarEstado valido aplica os valores",
+              c.restaurarEstado(bom) && c.getFlorins() == 123 && c.getSoldados() == 7 && c.isColheitaFeita());
 }
 
 // ----------------------------------------------------------------- Mercado
@@ -226,6 +242,137 @@ void Testes::testarPartida() {
     verificar("quinta cidade e recusada (maximo 4)", aceitas == 4 && cheia.getCidades().size() == 4);
 }
 
+// ------------------------------------------------- Persistencia (save/load)
+namespace {
+// Texto de um save valido (2 cidades), para os testes de erro mexerem em uma linha.
+std::string saveBase() {
+    return "BOLONHA_E_MILANO_SAVE v1\nvez=1\n"
+           "[cidade]\njogador=Ana\ntitulo=1\nnome=Bolonha\nano=1401\nflorins=900\nterras=10000\n"
+           "graos=500\nservos=200\nsoldados=4\nconstrucoes=2\ntaxa=20\njustica=Severa\ncolheita=1\nimpostos=0\n"
+           "[cidade]\njogador=Beto\ntitulo=0\nnome=Milano\nano=1401\nflorins=1000\nterras=10000\n"
+           "graos=500\nservos=200\nsoldados=0\nconstrucoes=0\ntaxa=10\njustica=Moderada\ncolheita=0\nimpostos=0\n";
+}
+
+std::string trocar(std::string texto, const std::string& de, const std::string& para) {
+    std::size_t pos = texto.find(de);
+    if (pos != std::string::npos) texto.replace(pos, de.size(), para);
+    return texto;
+}
+}  // namespace
+
+void Testes::testarPersistencia() {
+    std::cout << "\n-- Persistencia (salvar/carregar) --\n";
+    Persistencia persistencia;
+    std::string erro;
+
+    // Preparar: partida de 2 jogadores com estado "mexido".
+    Partida original;
+    for (const char* nome : {"Ana", "Beto"}) {
+        auto j = std::make_unique<Jogador>(nome);
+        auto c = std::make_unique<Cidade>(std::string(nome) == "Ana" ? "Bolonha" : "Milano", j.get());
+        original.adicionarCidade(std::move(j), std::move(c));
+    }
+    Cidade& ana = *original.getCidades()[0];
+    ana.getDono()->promover();
+    ana.removerFlorins(100);
+    ana.adicionarSoldados(4);
+    ana.adicionarConstrucoes(2);
+    ana.setTaxaImposto(20);
+    ana.setNivelJustica("Severa");
+    ana.marcarColheitaFeita();
+    original.passarTurno();   // vez de Milano
+
+    // Executar: salvar e carregar de volta.
+    std::stringstream arquivo;
+    persistencia.salvar(original, arquivo);
+    std::unique_ptr<Partida> lida = persistencia.carregar(arquivo, erro);
+
+    verificar("carregar o que foi salvo da certo", lida != nullptr);
+    if (!lida) return;
+    verificar("mesma quantidade de cidades", lida->getCidades().size() == 2);
+    const Cidade& a2 = *lida->getCidades()[0];
+    EstadoCidade e1 = ana.getEstado(), e2 = a2.getEstado();
+    verificar("recursos da cidade voltam iguais",
+              e1.ano == e2.ano && e1.florins == e2.florins && e1.terras == e2.terras &&
+              e1.graos == e2.graos && e1.servos == e2.servos && e1.soldados == e2.soldados &&
+              e1.construcoes == e2.construcoes);
+    verificar("indicadores do ano voltam iguais",
+              a2.isColheitaFeita() && !a2.isImpostosArrecadados());
+    verificar("taxa e justica voltam iguais", a2.getTaxaImposto() == 20 && a2.getNivelJustica() == "Severa");
+    verificar("nome da cidade e do jogador voltam iguais",
+              a2.getNome() == "Bolonha" && a2.getDono()->getNome() == "Ana");
+    verificar("titulo do jogador volta igual (Barao)", a2.getDono()->getTitulo() == "Barao");
+    verificar("a vez volta igual (Milano)", lida->getCidadeAtual()->getNome() == "Milano");
+
+    // Arquivo de verdade (salvar -> carregar -> apagar).
+    std::string caminho = "bolonha_teste_save.tmp.txt";   // na pasta atual; apagado no fim
+    bool gravou = persistencia.salvarArquivo(original, caminho, erro);
+    std::unique_ptr<Partida> doArquivo = persistencia.carregarArquivo(caminho, erro);
+    std::remove(caminho.c_str());
+    verificar("salvar e carregar em arquivo .txt de verdade",
+              gravou && doArquivo && doArquivo->getCidades()[0]->getFlorins() == 900);
+
+    // Erros: nada de partida pela metade.
+    verificar("arquivo inexistente e recusado",
+              !persistencia.carregarArquivo("nao_existe_123.txt", erro) && !erro.empty());
+    auto carregarTexto = [&](const std::string& texto) {
+        std::istringstream in(texto);
+        erro.clear();
+        return persistencia.carregar(in, erro);
+    };
+    verificar("save base de teste e valido", carregarTexto(saveBase()) != nullptr);
+    verificar("cabecalho incorreto e recusado",
+              !carregarTexto(trocar(saveBase(), "SAVE v1", "SAVE v9")) && !erro.empty());
+    verificar("arquivo vazio e recusado", !carregarTexto(""));
+    verificar("florins negativos sao recusados", !carregarTexto(trocar(saveBase(), "florins=900", "florins=-5")));
+    verificar("valor nao numerico e recusado", !carregarTexto(trocar(saveBase(), "florins=900", "florins=abc")));
+    verificar("justica inexistente e recusada", !carregarTexto(trocar(saveBase(), "Severa", "Branda")));
+    verificar("taxa acima do maximo (60%) e recusada", !carregarTexto(trocar(saveBase(), "taxa=20", "taxa=60")));
+    verificar("titulo Rei/Rainha num save e recusado", !carregarTexto(trocar(saveBase(), "titulo=1", "titulo=5")));
+    verificar("vez fora da lista e recusada", !carregarTexto(trocar(saveBase(), "vez=1", "vez=2")));
+    verificar("cidades em anos diferentes sao recusadas",
+              !carregarTexto(trocar(saveBase(), "ano=1401\nflorins=900", "ano=1402\nflorins=900")));
+    verificar("campo ausente e recusado", !carregarTexto(trocar(saveBase(), "servos=200\nsoldados=4", "soldados=4")));
+    verificar("linha mal formada e recusada", !carregarTexto(trocar(saveBase(), "vez=1", "vez 1")));
+    verificar("save sem nenhuma cidade e recusado", !carregarTexto("BOLONHA_E_MILANO_SAVE v1\nvez=0\n"));
+    std::string cinco = "BOLONHA_E_MILANO_SAVE v1\nvez=0\n";
+    std::string cidadeTxt = saveBase().substr(saveBase().find("[cidade]"));
+    cidadeTxt = cidadeTxt.substr(0, cidadeTxt.find("[cidade]", 1));
+    for (int i = 0; i < 5; i++) cinco += cidadeTxt;
+    verificar("save com 5 cidades e recusado (maximo 4)", !carregarTexto(cinco));
+}
+
+// ----------------------------------------------- Terminal (limpar e pausar)
+void Testes::testarTerminal() {
+    std::cout << "\n-- Terminal (limpar tela e pausar) --\n";
+    bool estavaAtivo = Terminal::isAtivo();
+
+    Terminal::setAtivo(true);
+    std::ostringstream saida;
+    Terminal::limparTela(saida);
+    verificar("limparTela envia a sequencia ANSI de limpeza", saida.str().find("\033[2J") != std::string::npos);
+
+    std::istringstream entrada("\nsobra\n");
+    std::ostringstream aviso;
+    bool continuou = Terminal::pausar(entrada, aviso);
+    verificar("pausar mostra a mensagem do ENTER",
+              aviso.str().find("Pressione ENTER para continuar. . .") != std::string::npos);
+    verificar("pausar consome so uma linha", continuou && entrada.peek() == 's');
+    std::istringstream vazia("");
+    std::ostringstream descarte;
+    verificar("pausar sem entrada (EOF) devolve false", !Terminal::pausar(vazia, descarte));
+
+    Terminal::setAtivo(false);
+    std::ostringstream mudo;
+    Terminal::limparTela(mudo);
+    std::istringstream intacta("linha\n");
+    bool seguiu = Terminal::pausar(intacta, mudo);
+    verificar("desligado: nao limpa nem escreve nada", mudo.str().empty());
+    verificar("desligado: pausar nao le a entrada", seguiu && intacta.peek() == 'l');
+
+    Terminal::setAtivo(estavaAtivo);
+}
+
 int Testes::executar() {
     std::cout << "===== TESTES BOLONHA E MILANO =====\n";
     testarCidade();
@@ -235,6 +382,8 @@ int Testes::executar() {
     testarConstrucoes();
     testarJogadorENobreza();
     testarPartida();
+    testarPersistencia();
+    testarTerminal();
     std::cout << "\nAprovados: " << aprovados << " | Reprovados: " << reprovados << "\n";
     return reprovados > 0 ? 1 : 0;
 }

@@ -29,6 +29,8 @@ private:
     static void testarConstrucoes();
     static void testarJogadorENobreza();
     static void testarPartida();
+    static void testarPersistencia();   // extra: salvar/carregar
+    static void testarTerminal();       // extra: limpar tela e pausar
 
 public:
     // Roda tudo e devolve 0 (todos passaram) ou 1 (alguma regra quebrou).

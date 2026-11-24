@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1200" width="1560" height="1200" font-family="DejaVu Sans, Verdana, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#202859"/></marker><marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#0B5C7A" stroke-width="1.6"/></marker></defs>
+<rect width="1560" height="1200" fill="white"/>
+<text x="780.0" y="46" text-anchor="middle" font-size="26" fill="#202859"><tspan font-weight="bold">Bolonha e Milano</tspan> · Diagrama de sequência: carregar jogo</text>
+<text x="780.0" y="74" text-anchor="middle" font-size="13" fill="#5B6B82">O que acontece quando o jogador escolhe "Carregar jogo" (opção 10) · seta cheia = chamada · tracejada = retorno</text>
+<line x1="120" y1="150" x2="120" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="350" y1="150" x2="350" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="620" y1="150" x2="620" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="880" y1="150" x2="880" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="1090" y1="150" x2="1090" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="1280" y1="150" x2="1280" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<line x1="1450" y1="150" x2="1450" y2="1170" stroke="#202859" stroke-width="1.3" stroke-dasharray="6 6"/>
+<rect x="40.0" y="102" width="160" height="48" fill="#202859"/><text x="120" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Jogador</text>
+<rect x="270.0" y="102" width="160" height="48" fill="#202859"/><text x="350" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Menu</text>
+<rect x="540.0" y="102" width="160" height="48" fill="#202859"/><text x="620" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Persistencia</text>
+<rect x="800.0" y="102" width="160" height="48" fill="#202859"/><text x="880" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Partida</text>
+<rect x="1010.0" y="102" width="160" height="48" fill="#202859"/><text x="1090" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Cidade</text>
+<rect x="1200.0" y="102" width="160" height="48" fill="#202859"/><text x="1280" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Governo</text>
+<rect x="1370.0" y="102" width="160" height="48" fill="#202859"/><text x="1450" y="132" text-anchor="middle" font-size="16" font-weight="bold" fill="white">:Terminal</text>
+<line x1="120" y1="200" x2="347" y2="200" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="235.0" y="192" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">opção 10 (Carregar jogo)</text>
+<line x1="350" y1="262" x2="123" y2="262" stroke="#0B5C7A" stroke-width="1.7" stroke-dasharray="7 5" marker-end="url(#r)"/>
+<text x="235.0" y="254" text-anchor="middle" font-size="14" font-family="DejaVu Sans, Verdana, sans-serif" font-style="italic" fill="#0B5C7A" paint-order="stroke" stroke="white" stroke-width="4">pede o nome do arquivo</text>
+<line x1="120" y1="324" x2="347" y2="324" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="235.0" y="316" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">savegame.txt</text>
+<line x1="350" y1="386" x2="617" y2="386" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="485.0" y="378" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">carregarArquivo(caminho, erro)</text>
+<line x1="620" y1="448" x2="877" y2="448" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="750.0" y="440" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">new Partida()</text>
+<line x1="620" y1="544" x2="1087" y2="544" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="855.0" y="536" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">new Cidade(nome, dono) + restaurarEstado(e)</text>
+<line x1="620" y1="606" x2="1277" y2="606" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="950.0" y="598" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">definirTaxaImposto() / definirJustica()</text>
+<line x1="620" y1="668" x2="877" y2="668" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="750.0" y="660" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">adicionarCidade(jogador, cidade)</text>
+<rect x="480" y="486" width="1074" height="222" fill="none" stroke="#E8A33D" stroke-width="2"/>
+<text x="488" y="504" font-size="13" fill="#B87A14"><tspan font-weight="bold">loop</tspan>  [para cada [cidade] do arquivo; qualquer valor inválido aborta]</text>
+<line x1="620" y1="734" x2="877" y2="734" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="750.0" y="726" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">restaurarVez(vez)</text>
+<line x1="620" y1="796" x2="353" y2="796" stroke="#0B5C7A" stroke-width="1.7" stroke-dasharray="7 5" marker-end="url(#r)"/>
+<text x="485.0" y="788" text-anchor="middle" font-size="14" font-family="DejaVu Sans, Verdana, sans-serif" font-style="italic" fill="#0B5C7A" paint-order="stroke" stroke="white" stroke-width="4">partida (ou nullptr + erro: a atual é mantida)</text>
+<line x1="350" y1="858" x2="877" y2="858" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="615.0" y="850" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">getCidadeAtual()</text>
+<line x1="350" y1="920" x2="123" y2="920" stroke="#0B5C7A" stroke-width="1.7" stroke-dasharray="7 5" marker-end="url(#r)"/>
+<text x="235.0" y="912" text-anchor="middle" font-size="14" font-family="DejaVu Sans, Verdana, sans-serif" font-style="italic" fill="#0B5C7A" paint-order="stroke" stroke="white" stroke-width="4">&quot;Jogo carregado&quot; + de quem é a vez</text>
+<line x1="350" y1="982" x2="1447" y2="982" stroke="#202859" stroke-width="1.7" marker-end="url(#a)"/>
+<text x="900.0" y="974" text-anchor="middle" font-size="14" font-family="DejaVu Sans Mono, monospace" fill="#202859" paint-order="stroke" stroke="white" stroke-width="4">pausar()  (ENTER para continuar)</text>
+</svg>

@@ -36,10 +36,11 @@ const int JOGADORES_PADRAO = 2;   // usado quando a quantidade digitada e invali
 
 Menu::Menu()
     : emExecucao(true), cidade(nullptr), mercado(), agricultura(), governo(),
-      construcoes(), nobreza() {}
+      construcoes(), nobreza(), persistencia() {}
 
 void Menu::executar() {
     while (emExecucao) {
+        Terminal::limparTela();
         exibirOpcoes();
         int opcao = lerOpcao();
         if (!emExecucao) break;   // fim da entrada (EOF)
@@ -51,8 +52,14 @@ void Menu::exibirOpcoes() const {
     std::cout << "\n==========================================\n"
               << "  BOLONHA E MILANO\n"
               << "  Um jogo de estrategia economica medieval\n"
-              << "==========================================\n"
-              << "1 - Novo jogo\n"
+              << "==========================================\n";
+    if (partida && cidade) {
+        std::cout << "Ano " << cidade->getAnoAtual() << " | vez de "
+                  << cidade->getDono()->getTitulo() << " " << cidade->getDono()->getNome()
+                  << " (" << cidade->getNome() << ")\n"
+                  << "------------------------------------------\n";
+    }
+    std::cout << "1 - Novo jogo\n"
               << "2 - Ver status da cidade\n"
               << "3 - Mercado\n"
               << "4 - Agricultura\n"
@@ -60,7 +67,9 @@ void Menu::exibirOpcoes() const {
               << "6 - Construcoes\n"
               << "7 - Encerrar turno\n"
               << "8 - Ver classificacao\n"
-              << "9 - Sobre o jogo\n"
+              << "9 - Salvar jogo\n"
+              << "10 - Carregar jogo\n"
+              << "11 - Sobre o jogo\n"
               << "0 - Sair\n"
               << "Escolha uma opcao: ";
 }
@@ -72,33 +81,48 @@ int Menu::lerOpcao() {
 }
 
 void Menu::processarOpcao(int opcao) {
+    // Submenus (3 a 6) limpam a propria tela; as demais opcoes imprimem um resultado e
+    // pausam, para o jogador conseguir ler antes de a tela ser limpa de novo.
     switch (opcao) {
         case 1:
             iniciarNovoJogo();
+            pausar();
             break;
         case 2:
             exibirStatus();
+            pausar();
             break;
         case 3:
-            if (exigirJogoEmAndamento()) abrirMercado();
+            if (exigirJogoEmAndamento()) abrirMercado(); else pausar();
             break;
         case 4:
-            if (exigirJogoEmAndamento()) abrirAgricultura();
+            if (exigirJogoEmAndamento()) abrirAgricultura(); else pausar();
             break;
         case 5:
-            if (exigirJogoEmAndamento()) abrirGoverno();
+            if (exigirJogoEmAndamento()) abrirGoverno(); else pausar();
             break;
         case 6:
-            if (exigirJogoEmAndamento()) abrirConstrucoes();
+            if (exigirJogoEmAndamento()) abrirConstrucoes(); else pausar();
             break;
         case 7:
             if (exigirJogoEmAndamento()) encerrarTurno();
+            pausar();
             break;
         case 8:
             if (exigirJogoEmAndamento()) exibirClassificacao();
+            pausar();
             break;
         case 9:
+            if (exigirJogoEmAndamento()) salvarJogo();
+            pausar();
+            break;
+        case 10:
+            carregarJogo();
+            pausar();
+            break;
+        case 11:
             exibirSobre();
+            pausar();
             break;
         case 0:
             emExecucao = false;
@@ -106,6 +130,7 @@ void Menu::processarOpcao(int opcao) {
             break;
         default:
             std::cout << "Opcao invalida. Tente novamente.\n";
+            pausar();
     }
 }
 
@@ -197,6 +222,7 @@ void Menu::exibirOpcoesMercado() const {
 void Menu::abrirMercado() {
     bool noMercado = true;
     while (noMercado && emExecucao) {
+        Terminal::limparTela();
         exibirOpcoesMercado();
         int opcao = lerOpcao();
         if (!emExecucao) break;
@@ -208,6 +234,7 @@ void Menu::abrirMercado() {
             case 0: noMercado = false; break;
             default: std::cout << "Opcao invalida. Tente novamente.\n";
         }
+        if (opcao != 0) pausar();
     }
 }
 
@@ -277,6 +304,7 @@ void Menu::exibirOpcoesAgricultura() const {
 void Menu::abrirAgricultura() {
     bool naAgricultura = true;
     while (naAgricultura && emExecucao) {
+        Terminal::limparTela();
         exibirOpcoesAgricultura();
         int opcao = lerOpcao();
         if (!emExecucao) break;
@@ -286,6 +314,7 @@ void Menu::abrirAgricultura() {
             case 0: naAgricultura = false;  break;
             default: std::cout << "Opcao invalida. Tente novamente.\n";
         }
+        if (opcao != 0) pausar();
     }
 }
 
@@ -340,6 +369,7 @@ void Menu::exibirOpcoesGoverno() const {
 void Menu::abrirGoverno() {
     bool noGoverno = true;
     while (noGoverno && emExecucao) {
+        Terminal::limparTela();
         exibirOpcoesGoverno();
         int opcao = lerOpcao();
         if (!emExecucao) break;
@@ -350,6 +380,7 @@ void Menu::abrirGoverno() {
             case 0: noGoverno = false;     break;
             default: std::cout << "Opcao invalida. Tente novamente.\n";
         }
+        if (opcao != 0) pausar();
     }
 }
 
@@ -423,6 +454,7 @@ void Menu::exibirOpcoesConstrucoes() const {
 void Menu::abrirConstrucoes() {
     bool naConstrucoes = true;
     while (naConstrucoes && emExecucao) {
+        Terminal::limparTela();
         exibirOpcoesConstrucoes();
         int opcao = lerOpcao();
         if (!emExecucao) break;
@@ -432,6 +464,7 @@ void Menu::abrirConstrucoes() {
             case 0: naConstrucoes = false;  break;
             default: std::cout << "Opcao invalida. Tente novamente.\n";
         }
+        if (opcao != 0) pausar();
     }
 }
 
@@ -529,4 +562,55 @@ void Menu::encerrarPartida() {
     }
     cidade = nullptr;
     partida.reset();
+}
+
+// ------------------------------------------------------------ Salvar / carregar
+
+// Pergunta o nome do arquivo (ENTER = savegame.txt) e garante a extensao .txt.
+bool Menu::lerNomeArquivo(std::string& caminho) {
+    std::cout << "Nome do arquivo (ENTER = savegame.txt): ";
+    if (!std::getline(std::cin, caminho)) {
+        emExecucao = false;
+        return false;
+    }
+    caminho = trim(caminho);
+    if (caminho.empty()) caminho = "savegame.txt";
+    const std::string ext = ".txt";
+    if (caminho.size() < ext.size() ||
+        caminho.compare(caminho.size() - ext.size(), ext.size(), ext) != 0) {
+        caminho += ext;
+    }
+    return true;
+}
+
+void Menu::salvarJogo() {
+    std::string caminho;
+    if (!lerNomeArquivo(caminho)) return;
+    std::string erro;
+    if (persistencia.salvarArquivo(*partida, caminho, erro)) {
+        std::cout << "Jogo salvo em \"" << caminho << "\".\n";
+    } else {
+        std::cout << "Falha ao salvar: " << erro << ".\n";
+    }
+}
+
+// Carregar substitui a partida atual, mas so depois de o arquivo ser validado por inteiro.
+void Menu::carregarJogo() {
+    std::string caminho;
+    if (!lerNomeArquivo(caminho)) return;
+    std::string erro;
+    std::unique_ptr<Partida> carregada = persistencia.carregarArquivo(caminho, erro);
+    if (!carregada) {
+        std::cout << "Falha ao carregar: " << erro << ". A partida atual foi mantida.\n";
+        return;
+    }
+    cidade = nullptr;
+    partida = std::move(carregada);
+    cidade = partida->getCidadeAtual();
+    std::cout << "Jogo carregado de \"" << caminho << "\".\n";
+    anunciarVez();
+}
+
+void Menu::pausar() {
+    if (!Terminal::pausar()) emExecucao = false;   // fim da entrada (EOF)
 }

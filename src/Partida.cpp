@@ -23,6 +23,14 @@ int Partida::getAnoAtual() const {
 int Partida::getAnoFinal() const { return ANO_FINAL; }
 int Partida::getMaximoJogadores() const { return MAXIMO_JOGADORES; }
 
+int Partida::getIndiceAtual() const { return static_cast<int>(indiceAtual); }
+
+bool Partida::restaurarVez(int indice) {
+    if (indice < 0 || indice >= static_cast<int>(cidades.size())) return false;
+    indiceAtual = static_cast<std::size_t>(indice);
+    return true;
+}
+
 bool Partida::passarTurno() {
     indiceAtual++;
     if (indiceAtual >= cidades.size()) {

@@ -104,6 +104,28 @@ bool Cidade::removerConstrucoes(int quantidade) {
     return true;
 }
 
+EstadoCidade Cidade::getEstado() const {
+    return {anoAtual, florins, terras, graos, servos, soldados, construcoes,
+            colheitaFeita, impostosArrecadados};
+}
+
+bool Cidade::restaurarEstado(const EstadoCidade& e) {
+    if (e.ano < ANO_INICIAL || e.florins < 0 || e.terras < 0 || e.graos < 0 ||
+        e.servos < 0 || e.soldados < 0 || e.construcoes < 0) {
+        return false;
+    }
+    anoAtual = e.ano;
+    florins = e.florins;
+    terras = e.terras;
+    graos = e.graos;
+    servos = e.servos;
+    soldados = e.soldados;
+    construcoes = e.construcoes;
+    colheitaFeita = e.colheitaFeita;
+    impostosArrecadados = e.impostosArrecadados;
+    return true;
+}
+
 void Cidade::exibirStatus() const {
     std::cout << "\n--- Status da cidade ---\n"
               << "Cidade:     " << nome << "\n"

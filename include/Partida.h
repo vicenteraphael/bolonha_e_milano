@@ -29,6 +29,8 @@ public:
     int getAnoAtual() const;
     int getAnoFinal() const;
     int getMaximoJogadores() const;
+    int getIndiceAtual() const;               // posicao da vez (para salvar)
+    bool restaurarVez(int indice);            // false se fora da lista (para carregar)
 
     bool passarTurno();                      // true se o ano acabou
     std::vector<Cidade*> encerrarAno(const Nobreza& nobreza);   // cidades promovidas

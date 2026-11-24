@@ -6,6 +6,8 @@
 #include "Cidade.h"
 #include "Partida.h"
 #include "Nobreza.h"
+#include "Persistencia.h"
+#include "Terminal.h"
 #include "Mercado.h"
 #include "Agricultura.h"
 #include "Governo.h"
@@ -24,6 +26,7 @@ private:
     const Governo governo;              // servico de impostos e justica (final)
     const Construcoes construcoes;      // servico de soldados e construcoes (final)
     const Nobreza nobreza;              // servico de prestigio e titulos (final)
+    const Persistencia persistencia;    // servico de salvar/carregar (final)
 
     void exibirOpcoes() const;
     int lerOpcao();
@@ -68,6 +71,12 @@ private:
     void exibirClassificacao() const;
     void encerrarPartida();
     void anunciarVez() const;
+
+    // Extras: salvar/carregar e pausa
+    void salvarJogo();
+    void carregarJogo();
+    bool lerNomeArquivo(std::string& caminho);   // false se a entrada acabou
+    void pausar();                               // "Pressione ENTER para continuar. . ."
 
 public:
     Menu();

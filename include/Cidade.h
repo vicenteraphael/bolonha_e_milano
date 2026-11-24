@@ -10,6 +10,14 @@
 // Padrao seguro dos recursos: adicionarX() sempre funciona; removerX() devolve
 // false (e nao altera nada) se nao houver quantidade suficiente. Nenhum recurso
 // jamais fica negativo.
+// Foto dos valores que variam durante a partida (usada para salvar/carregar).
+// Taxa de imposto e nivel de justica ficam de fora: a validacao delas e do Governo.
+struct EstadoCidade {
+    int ano;
+    int florins, terras, graos, servos, soldados, construcoes;
+    bool colheitaFeita, impostosArrecadados;
+};
+
 class Cidade {
 private:
     // Constantes de valor inicial: so preenchem o construtor.
@@ -76,6 +84,11 @@ public:
     bool removerSoldados(int quantidade);
     void adicionarConstrucoes(int quantidade);
     bool removerConstrucoes(int quantidade);
+
+    EstadoCidade getEstado() const;
+    // Restaura uma foto salva. Devolve false (sem alterar nada) se algum valor for
+    // invalido: ano antes de 1400 ou qualquer recurso negativo.
+    bool restaurarEstado(const EstadoCidade& estado);
 
     void exibirStatus() const;
 };
