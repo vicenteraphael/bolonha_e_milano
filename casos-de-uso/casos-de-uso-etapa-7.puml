@@ -1,0 +1,87 @@
+@startuml casos-de-uso-etapa-7
+title Bolonha e Milano — Casos de uso (Etapa 7)
+
+' ---------- estilo ----------
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam ArrowColor #0B5C7A
+skinparam actor {
+  BorderColor #202859
+  BackgroundColor #FFFFFF
+  FontColor #202859
+}
+skinparam usecase {
+  BackgroundColor #E8F0F4
+  BorderColor #0B5C7A
+  BorderThickness 2
+  FontColor #202859
+}
+skinparam rectangle {
+  BorderColor #202859
+  BorderThickness 2
+  FontColor #202859
+}
+left to right direction
+
+actor Jogador
+
+rectangle "Bolonha e Milano" {
+  usecase "Iniciar novo jogo" as UC1
+  usecase "Ver status da cidade" as UC2
+  usecase "Acessar mercado" as UC3
+  usecase "Acessar agricultura" as UC4
+  usecase "Acessar governo" as UC5
+  usecase "Acessar construções" as UC6
+  usecase "Encerrar turno" as UC7 #FFF8EC;line:E8A33D
+  usecase "Ver classificação" as UC8 #FFF8EC;line:E8A33D
+  usecase "Ver informações sobre o jogo" as UC9
+  usecase "Sair do jogo" as UC10
+
+  usecase "Comprar grãos" as UC31
+  usecase "Vender grãos" as UC32
+  usecase "Comprar terras" as UC33
+  usecase "Vender terras" as UC34
+
+  usecase "Colher (processar colheita)" as UC41
+  usecase "Distribuir alimentos" as UC42
+
+  usecase "Arrecadar impostos" as UC51
+  usecase "Definir taxa de imposto" as UC52
+  usecase "Definir nível de justiça" as UC53
+
+  usecase "Recrutar soldados" as UC61
+  usecase "Construir" as UC62
+
+  usecase "Fechar o ano (promover títulos)" as UC71 #FFF8EC;line:E8A33D
+  usecase "Declarar vencedor" as UC72 #FFF8EC;line:E8A33D
+}
+
+Jogador --> UC1
+Jogador --> UC2
+Jogador --> UC3
+Jogador --> UC4
+Jogador --> UC5
+Jogador --> UC6
+Jogador --> UC7
+Jogador --> UC8
+Jogador --> UC9
+Jogador --> UC10
+
+UC31 .> UC3 : <<extend>>
+UC32 .> UC3 : <<extend>>
+UC33 .> UC3 : <<extend>>
+UC34 .> UC3 : <<extend>>
+UC41 .> UC4 : <<extend>>
+UC42 .> UC4 : <<extend>>
+UC51 .> UC5 : <<extend>>
+UC52 .> UC5 : <<extend>>
+UC53 .> UC5 : <<extend>>
+UC61 .> UC6 : <<extend>>
+UC62 .> UC6 : <<extend>>
+UC71 .> UC7 : <<extend>>
+UC72 .> UC71 : <<extend>>
+
+legend bottom
+  Contorno âmbar = novo nesta etapa (Encerrar turno e Ver classificação).
+endlegend
+@enduml

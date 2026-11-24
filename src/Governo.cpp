@@ -14,7 +14,9 @@ double Governo::multiplicadorPara(const std::string& nivel) const {
     return MULTIPLICADOR_MODERADA;
 }
 
+// Uma vez por ano: se ja arrecadou, devolve -1 sem alterar nada.
 int Governo::arrecadarImpostos(Cidade& cidade) const {
+    if (cidade.isImpostosArrecadados()) return -1;
     int base = static_cast<int>(
         static_cast<long long>(cidade.getServos()) * cidade.getTaxaImposto() / 100);
     double multiplicador = multiplicadorPara(cidade.getNivelJustica());
@@ -25,6 +27,7 @@ int Governo::arrecadarImpostos(Cidade& cidade) const {
     arrecadado = std::min(arrecadado, folga);
 
     cidade.adicionarFlorins(arrecadado);
+    cidade.marcarImpostosArrecadados();
     return arrecadado;
 }
 

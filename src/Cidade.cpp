@@ -12,7 +12,9 @@ Cidade::Cidade(const std::string& nome, Jogador* dono)
       taxaImposto(TAXA_IMPOSTO_INICIAL),
       nivelJustica(NIVEL_JUSTICA_INICIAL),
       soldados(SOLDADOS_INICIAIS),
-      construcoes(CONSTRUCOES_INICIAIS) {}
+      construcoes(CONSTRUCOES_INICIAIS),
+      colheitaFeita(false),
+      impostosArrecadados(false) {}
 
 std::string Cidade::getNome() const { return nome; }
 int Cidade::getAnoAtual() const { return anoAtual; }
@@ -29,8 +31,15 @@ std::string Cidade::getNivelJustica() const { return nivelJustica; }
 void Cidade::setTaxaImposto(int taxa) { taxaImposto = taxa; }
 void Cidade::setNivelJustica(const std::string& nivel) { nivelJustica = nivel; }
 
+bool Cidade::isColheitaFeita() const { return colheitaFeita; }
+void Cidade::marcarColheitaFeita() { colheitaFeita = true; }
+bool Cidade::isImpostosArrecadados() const { return impostosArrecadados; }
+void Cidade::marcarImpostosArrecadados() { impostosArrecadados = true; }
+
 void Cidade::avancarAno() {
     anoAtual++;
+    colheitaFeita = false;
+    impostosArrecadados = false;
 }
 
 // Adicionar so aceita quantidades positivas, para nunca reduzir um recurso por
@@ -108,5 +117,7 @@ void Cidade::exibirStatus() const {
               << "Justica:    " << nivelJustica << "\n"
               << "Soldados:   " << soldados << "\n"
               << "Construcoes: " << construcoes << "\n"
+              << "Colheita:   " << (colheitaFeita ? "ja feita neste ano" : "pendente") << "\n"
+              << "Impostos:   " << (impostosArrecadados ? "ja arrecadados neste ano" : "pendentes") << "\n"
               << "------------------------\n";
 }

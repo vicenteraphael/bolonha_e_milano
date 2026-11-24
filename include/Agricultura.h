@@ -15,8 +15,9 @@ private:
     static constexpr int PERCENTUAL_MAXIMO      = 80;  // maior fatia distribuivel
 
 public:
-    // Colher sempre funciona (nao ha "recusa"): o que se planta e limitado, nesta
-    // ordem, por terras, mao de obra e sementes. Devolve os hectares cultivados.
+    // Colher so vale uma vez por ano: se a cidade ja colheu, devolve -1 sem alterar nada.
+    // Senao o que se planta e limitado, nesta ordem, por terras, mao de obra e
+    // sementes, e devolve os hectares cultivados.
     int processarColheita(Cidade& cidade) const;
 
     // Devolve false (sem alterar nada) se o percentual estiver fora de 20 a 80.

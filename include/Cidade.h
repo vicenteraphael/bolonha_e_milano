@@ -34,6 +34,8 @@ private:
     std::string nivelJustica; // configuracao: "Justa", "Moderada" ou "Severa"
     int soldados;             // recurso acumulavel (forca de defesa)
     int construcoes;          // recurso acumulavel (infraestrutura)
+    bool colheitaFeita;       // ja colheu neste ano?
+    bool impostosArrecadados; // ja arrecadou neste ano?
 
 public:
     Cidade(const std::string& nome, Jogador* dono);
@@ -54,7 +56,13 @@ public:
     void setTaxaImposto(int taxa);
     void setNivelJustica(const std::string& nivel);
 
-    void avancarAno();   // ainda nao e chamado por nenhum menu (Etapa 7)
+    // Indicadores "ja fez neste ano?" (zerados por avancarAno).
+    bool isColheitaFeita() const;
+    void marcarColheitaFeita();
+    bool isImpostosArrecadados() const;
+    void marcarImpostosArrecadados();
+
+    void avancarAno();   // soma 1 ao ano e zera os dois indicadores (chamado pela Partida)
 
     void adicionarFlorins(int quantidade);
     bool removerFlorins(int quantidade);

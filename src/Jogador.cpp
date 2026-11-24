@@ -1,16 +1,16 @@
 #include "Jogador.h"
 
 Jogador::Jogador(const std::string& nome)
-    : nome(nome), titulo("Cavaleiro") {}
+    : nome(nome), nivelTitulo(0) {}
 
-std::string Jogador::getNome() const {
-    return nome;
-}
+std::string Jogador::getNome() const { return nome; }
+std::string Jogador::getTitulo() const { return TITULOS[nivelTitulo]; }
+int Jogador::getNivelTitulo() const { return nivelTitulo; }
 
-std::string Jogador::getTitulo() const {
-    return titulo;
-}
+bool Jogador::ehMonarca() const { return nivelTitulo == NUM_TITULOS - 1; }
 
-void Jogador::setTitulo(const std::string& novoTitulo) {
-    titulo = novoTitulo;
+bool Jogador::promover() {
+    if (ehMonarca()) return false;
+    nivelTitulo++;
+    return true;
 }

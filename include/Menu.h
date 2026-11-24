@@ -4,6 +4,8 @@
 #include <memory>
 #include "Jogador.h"
 #include "Cidade.h"
+#include "Partida.h"
+#include "Nobreza.h"
 #include "Mercado.h"
 #include "Agricultura.h"
 #include "Governo.h"
@@ -15,12 +17,13 @@ class Menu {
 private:
     // std::cin faz o papel do "scanner" do Java.
     bool emExecucao;
-    std::unique_ptr<Jogador> jogador;   // nenhum ate "Novo jogo"
-    std::unique_ptr<Cidade> cidade;     // nenhuma ate "Novo jogo"
+    std::unique_ptr<Partida> partida;   // nenhuma ate "Novo jogo" (e de novo nula ao fim)
+    Cidade* cidade;                     // a cidade da vez (pertence a Partida); nullptr sem partida
     const Mercado mercado;              // servico de compra e venda (final)
     const Agricultura agricultura;      // servico de colheita e alimentos (final)
     const Governo governo;              // servico de impostos e justica (final)
     const Construcoes construcoes;      // servico de soldados e construcoes (final)
+    const Nobreza nobreza;              // servico de prestigio e titulos (final)
 
     void exibirOpcoes() const;
     int lerOpcao();
@@ -59,6 +62,12 @@ private:
     void exibirOpcoesConstrucoes() const;
     void recrutarSoldados();
     void construir();
+
+    // Etapa 7: rodadas, classificacao e fim de jogo
+    void encerrarTurno();
+    void exibirClassificacao() const;
+    void encerrarPartida();
+    void anunciarVez() const;
 
 public:
     Menu();

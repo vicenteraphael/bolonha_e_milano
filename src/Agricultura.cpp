@@ -19,6 +19,8 @@ int folga(int atual) {
 // sementes  = hectares / 2   (reduzidas ao estoque de graos se faltar)
 // producao  = hectares x 2   (somada ao estoque, depois de gastar as sementes)
 int Agricultura::processarColheita(Cidade& cidade) const {
+    if (cidade.isColheitaFeita()) return -1;
+    if (cidade.isColheitaFeita()) return -1;
     long long maoDeObra = static_cast<long long>(cidade.getServos()) * HECTARES_POR_SERVO;
     long long hectares = std::min<long long>(cidade.getTerras(), maoDeObra);
 
@@ -34,7 +36,7 @@ int Agricultura::processarColheita(Cidade& cidade) const {
     long long producao = hectares * RENDIMENTO_POR_HECTARE;
     producao = std::min<long long>(producao, folga(cidade.getGraos()));
     cidade.adicionarGraos(static_cast<int>(producao));
-
+    cidade.marcarColheitaFeita();
     return static_cast<int>(hectares);
 }
 

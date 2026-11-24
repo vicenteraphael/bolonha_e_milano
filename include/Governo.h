@@ -18,7 +18,8 @@ private:
 
 public:
     // base = servos x taxa / 100; arrecadado = base x multiplicador (soma aos florins).
-    // Devolve o valor arrecadado.
+    // So vale uma vez por ano: se ja arrecadou, devolve -1 sem alterar nada.
+    // Senao devolve o valor arrecadado.
     int arrecadarImpostos(Cidade& cidade) const;
 
     // Devolve false (sem alterar nada) se a taxa estiver fora de 0 a 50.
